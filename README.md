@@ -1,4 +1,5 @@
-Exercício 1
+Corra, Djonga
+[https://www.youtube.com/watch?v=QcJ9oxMj6JI]
 
-Exercício 2
-Musica escolhida: Canção Infantil
+Quem é o jogador profissional? Feat. Vampeta
+[https://www.youtube.com/watch?v=lRa-K3hRZQs]
