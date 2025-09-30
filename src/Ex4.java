@@ -1,20 +1,86 @@
-class Ex4 {
+import javax.swing.*;
+import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
+
+// =========================
+// MAIN
+// =========================
+public class Ex4 {
     public static void main(String[] args) {
-// =========================
-// IMAGEM 3: Amarula Cup
-// =========================
-
-        Animal animal = new Animal("Elefante", 2.5, "frutas");
-        animal.comer();
-
-        Bebida bebida = new Bebida(15, 17.5, "Whisky");
-        bebida.beber();
-
-        Copo copo = new Copo("Vidro", 30.0, 500);
-        copo.encher();
+        SwingUtilities.invokeLater(() -> new TelaPrincipalEx4());
     }
 }
 
+// =========================
+// Tela Principal
+// =========================
+class TelaPrincipalEx4 extends JFrame {
+    public TelaPrincipalEx4() {
+        setTitle("Menu Principal - IMAGEM 3: Amarula Cup");
+        setSize(500, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        setLayout(new GridLayout(3, 1, 10, 10));
+
+        JButton btnAnimal = new JButton("Cadastrar Animal");
+        JButton btnBebida = new JButton("Cadastrar Bebida");
+        JButton btnCopo = new JButton("Cadastrar Copo");
+
+        add(btnAnimal);
+        add(btnBebida);
+        add(btnCopo);
+
+        // Evento Botão Animal
+        btnAnimal.addActionListener(e -> {
+            String especie = JOptionPane.showInputDialog("Digite a espécie do animal:");
+            double tamanho = Double.parseDouble(JOptionPane.showInputDialog("Digite o tamanho (em metros):"));
+            String alimentacao = JOptionPane.showInputDialog("Digite a alimentação:");
+
+            Animal animal = new Animal(especie, tamanho, alimentacao);
+            animal.comer();
+            salvarCSV("Animal", especie + ";" + tamanho + ";" + alimentacao);
+        });
+
+        // Evento Botão Bebida
+        btnBebida.addActionListener(e -> {
+            int idade = Integer.parseInt(JOptionPane.showInputDialog("Digite a idade da bebida (em anos):"));
+            double teorAlcoolico = Double.parseDouble(JOptionPane.showInputDialog("Digite o teor alcoólico (%):"));
+            String sabor = JOptionPane.showInputDialog("Digite o sabor:");
+
+            Bebida bebida = new Bebida(idade, teorAlcoolico, sabor);
+            bebida.beber();
+            salvarCSV("Bebida", idade + ";" + teorAlcoolico + ";" + sabor);
+        });
+
+        // Evento Botão Copo
+        btnCopo.addActionListener(e -> {
+            String material = JOptionPane.showInputDialog("Digite o material do copo:");
+            double preco = Double.parseDouble(JOptionPane.showInputDialog("Digite o preço do copo (R$):"));
+            int quantidade = Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade em ml:"));
+
+            Copo copo = new Copo(material, preco, quantidade);
+            copo.encher();
+            salvarCSV("Copo", material + ";" + preco + ";" + quantidade);
+        });
+
+        setVisible(true);
+    }
+
+    // Método para salvar em CSV
+    private void salvarCSV(String tipo, String dados) {
+        try (FileWriter writer = new FileWriter("dados_ex4.csv", true)) {
+            writer.write(tipo + ";" + dados + "\n");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar no CSV: " + ex.getMessage());
+        }
+    }
+}
+
+// =========================
+// CLASSES
+// =========================
 class Animal {
     private String especie;
     private double tamanho;
@@ -27,7 +93,9 @@ class Animal {
     }
 
     public void comer() {
-        System.out.println("O " + especie + " tem " + tamanho + " metros e está se alimentando de " + alimentacao);
+        JOptionPane.showMessageDialog(null,
+                "O " + especie + " tem " + tamanho +
+                        " metros e está se alimentando de " + alimentacao);
     }
 }
 
@@ -43,7 +111,9 @@ class Bebida {
     }
 
     public void beber() {
-        System.out.println("Bebendo " + sabor + " de " + idade + " anos com teor alcoólico " + teorAlcoolico + "%");
+        JOptionPane.showMessageDialog(null,
+                "Bebendo " + sabor + " de " + idade +
+                        " anos com teor alcoólico " + teorAlcoolico + "%");
     }
 }
 
@@ -59,6 +129,8 @@ class Copo {
     }
 
     public void encher() {
-        System.out.println("Encher o copo de " + material + " de " + quantidade + "ml no bar custa R$" + preco + "reais" );
+        JOptionPane.showMessageDialog(null,
+                "Encher o copo de " + material +
+                        " de " + quantidade + "ml no bar custa R$" + preco);
     }
 }

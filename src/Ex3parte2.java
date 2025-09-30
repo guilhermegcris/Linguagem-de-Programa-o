@@ -1,22 +1,85 @@
-class Ex3parte2 {
+import javax.swing.*;
+import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
+
+// =========================
+// MAIN
+// =========================
+public class Ex3parte2 {
     public static void main(String[] args) {
-// =========================
-// IMAGEM 2: Torre Eiffel
-// =========================
-        // Pais
-        Pais pais = new Pais("Brasil", 200000000, "America do Sul");
-        pais.viajar();
-
-        // Edificio
-        Edificio ediificio = new Edificio("Ferro", 330, 1000000.0);
-        ediificio.construir();
-
-        // Arvore
-        Arvore arvore = new Arvore(15.5, 80, "Carvalho");
-        arvore.plantar();
+        SwingUtilities.invokeLater(() -> new TelaPrincipal3());
     }
 }
 
+// =========================
+// Tela Principal
+// =========================
+class TelaPrincipal3 extends JFrame {
+    public TelaPrincipal3() {
+        setTitle("Menu Principal - IMAGEM 2: Torre Eiffel");
+        setSize(500, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        setLayout(new GridLayout(4, 1, 10, 10));
+
+        JButton btnPais = new JButton("Cadastrar País");
+        JButton btnEdificio = new JButton("Cadastrar Edifício");
+        JButton btnArvore = new JButton("Cadastrar Árvore");
+
+        add(btnPais);
+        add(btnEdificio);
+        add(btnArvore);
+
+        // Evento Botão País
+        btnPais.addActionListener(e -> {
+            String nacionalidade = JOptionPane.showInputDialog("Digite o nome do país:");
+            int habitantes = Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade de habitantes:"));
+            String continente = JOptionPane.showInputDialog("Digite o continente:");
+
+            Pais pais = new Pais(nacionalidade, habitantes, continente);
+            pais.viajar();
+            salvarCSV("Pais", nacionalidade + ";" + habitantes + ";" + continente);
+        });
+
+        // Evento Botão Edifício
+        btnEdificio.addActionListener(e -> {
+            String material = JOptionPane.showInputDialog("Digite o material:");
+            double altura = Double.parseDouble(JOptionPane.showInputDialog("Digite a altura (em metros):"));
+            double valor = Double.parseDouble(JOptionPane.showInputDialog("Digite o valor (em R$):"));
+
+            Edificio edificio = new Edificio(material, altura, valor);
+            edificio.construir();
+            salvarCSV("Edificio", material + ";" + altura + ";" + valor);
+        });
+
+        // Evento Botão Árvore
+        btnArvore.addActionListener(e -> {
+            double tamanho = Double.parseDouble(JOptionPane.showInputDialog("Digite o tamanho (em metros):"));
+            int idade = Integer.parseInt(JOptionPane.showInputDialog("Digite a idade (em anos):"));
+            String especie = JOptionPane.showInputDialog("Digite a espécie:");
+
+            Arvore arvore = new Arvore(tamanho, idade, especie);
+            arvore.plantar();
+            salvarCSV("Arvore", tamanho + ";" + idade + ";" + especie);
+        });
+
+        setVisible(true);
+    }
+
+    private void salvarCSV(String tipo, String dados) {
+        try (FileWriter writer = new FileWriter("dados_ex2.csv", true)) {
+            writer.write(tipo + ";" + dados + "\n");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar no CSV: " + ex.getMessage());
+        }
+    }
+}
+
+// =========================
+// CLASSES
+// =========================
 class Pais {
     private String nacionalidade;
     private int habitantes;
@@ -29,7 +92,9 @@ class Pais {
     }
 
     public void viajar() {
-        System.out.println("Viajando pelo " + nacionalidade + " localizado na " + continente + " com mais de "+ habitantes + " habitantes");
+        JOptionPane.showMessageDialog(null,
+                "Viajando pelo " + nacionalidade + " localizado na " + continente +
+                        " com mais de " + habitantes + " habitantes");
     }
 }
 
@@ -45,7 +110,9 @@ class Edificio {
     }
 
     public void construir() {
-        System.out.println("Construindo edifício de " + material + " com altura " + altura + " que custará " + valor);
+        JOptionPane.showMessageDialog(null,
+                "Construindo edifício de " + material + " com altura " + altura +
+                        "m que custará R$ " + valor);
     }
 }
 
@@ -61,6 +128,8 @@ class Arvore {
     }
 
     public void plantar() {
-        System.out.println("Plantando árvore da espécie " + especie + " que normalmente chega a " +  tamanho + " metros de altura e " + idade + " anos");
+        JOptionPane.showMessageDialog(null,
+                "Plantando árvore da espécie " + especie +
+                        " que chega a " + tamanho + "m e vive até " + idade + " anos");
     }
 }
