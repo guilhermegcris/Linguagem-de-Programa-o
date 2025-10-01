@@ -1,86 +1,208 @@
+package org.example;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.FileWriter;
-import java.io.IOException;
 
-// =========================
+// =====================
 // MAIN
-// =========================
+// =====================
 public class Ex4 {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new TelaPrincipalEx4());
     }
 }
 
-// =========================
+// =====================
 // Tela Principal
-// =========================
+// =====================
 class TelaPrincipalEx4 extends JFrame {
+    private static JTextArea areaResultados;
+
     public TelaPrincipalEx4() {
         setTitle("Menu Principal - IMAGEM 3: Amarula Cup");
-        setSize(500, 300);
+        setSize(400, 200);
+        setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
-        setLayout(new GridLayout(3, 1, 10, 10));
-
+        JPanel botoes = new JPanel(new GridLayout(3, 1));
         JButton btnAnimal = new JButton("Cadastrar Animal");
         JButton btnBebida = new JButton("Cadastrar Bebida");
         JButton btnCopo = new JButton("Cadastrar Copo");
 
-        add(btnAnimal);
-        add(btnBebida);
-        add(btnCopo);
+        botoes.add(btnAnimal);
+        botoes.add(btnBebida);
+        botoes.add(btnCopo);
 
-        // Evento Botão Animal
-        btnAnimal.addActionListener(e -> {
-            String especie = JOptionPane.showInputDialog("Digite a espécie do animal:");
-            double tamanho = Double.parseDouble(JOptionPane.showInputDialog("Digite o tamanho (em metros):"));
-            String alimentacao = JOptionPane.showInputDialog("Digite a alimentação:");
+        areaResultados = new JTextArea();
+        areaResultados.setEditable(false);
+        JScrollPane scroll = new JScrollPane(areaResultados);
 
-            Animal animal = new Animal(especie, tamanho, alimentacao);
-            animal.comer();
-            salvarCSV("Animal", especie + ";" + tamanho + ";" + alimentacao);
-        });
+        add(botoes, BorderLayout.NORTH);
+        add(scroll, BorderLayout.CENTER);
 
-        // Evento Botão Bebida
-        btnBebida.addActionListener(e -> {
-            int idade = Integer.parseInt(JOptionPane.showInputDialog("Digite a idade da bebida (em anos):"));
-            double teorAlcoolico = Double.parseDouble(JOptionPane.showInputDialog("Digite o teor alcoólico (%):"));
-            String sabor = JOptionPane.showInputDialog("Digite o sabor:");
+        btnAnimal.addActionListener(e -> new AnimalGUI());
+        btnBebida.addActionListener(e -> new BebidaGUI());
+        btnCopo.addActionListener(e -> new CopoGUI());
 
-            Bebida bebida = new Bebida(idade, teorAlcoolico, sabor);
-            bebida.beber();
-            salvarCSV("Bebida", idade + ";" + teorAlcoolico + ";" + sabor);
-        });
-
-        // Evento Botão Copo
-        btnCopo.addActionListener(e -> {
-            String material = JOptionPane.showInputDialog("Digite o material do copo:");
-            double preco = Double.parseDouble(JOptionPane.showInputDialog("Digite o preço do copo (R$):"));
-            int quantidade = Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade em ml:"));
-
-            Copo copo = new Copo(material, preco, quantidade);
-            copo.encher();
-            salvarCSV("Copo", material + ";" + preco + ";" + quantidade);
-        });
-
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
-    // Método para salvar em CSV
-    private void salvarCSV(String tipo, String dados) {
-        try (FileWriter writer = new FileWriter("dados_ex4.csv", true)) {
-            writer.write(tipo + ";" + dados + "\n");
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar no CSV: " + ex.getMessage());
+    public static void registrar(String arquivo, String linha, String mensagem) {
+        areaResultados.append(mensagem + "\n");
+        UtilCSV.salvar(arquivo, linha);
+    }
+}
+
+// =====================
+// Tela Animal
+// =====================
+class AnimalGUI extends JFrame {
+    private JTextField especieField, tamanhoField, alimentacaoField;
+
+    public AnimalGUI() {
+        setTitle("Cadastro de Animal");
+        setSize(400, 200);
+        setLayout(new GridLayout(4, 2));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        add(new JLabel("Espécie:"));
+        especieField = new JTextField();
+        add(especieField);
+
+        add(new JLabel("Tamanho (m):"));
+        tamanhoField = new JTextField();
+        add(tamanhoField);
+
+        add(new JLabel("Alimentação:"));
+        alimentacaoField = new JTextField();
+        add(alimentacaoField);
+
+        JButton salvarButton = new JButton("Salvar");
+        add(salvarButton);
+
+        salvarButton.addActionListener(e -> {
+            String especie = especieField.getText();
+            double tamanho = Double.parseDouble(tamanhoField.getText());
+            String alimentacao = alimentacaoField.getText();
+
+            Animal animal = new Animal(especie, tamanho, alimentacao);
+            String mensagem = animal.comer();
+            TelaPrincipalEx4.registrar("animal.csv",
+                    especie + ";" + tamanho + ";" + alimentacao,
+                    mensagem);
+        });
+
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+}
+
+// =====================
+// Tela Bebida
+// =====================
+class BebidaGUI extends JFrame {
+    private JTextField idadeField, teorField, saborField;
+
+    public BebidaGUI() {
+        setTitle("Cadastro de Bebida");
+        setSize(400, 200);
+        setLayout(new GridLayout(4, 2));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        add(new JLabel("Idade (anos):"));
+        idadeField = new JTextField();
+        add(idadeField);
+
+        add(new JLabel("Teor Alcoólico (%):"));
+        teorField = new JTextField();
+        add(teorField);
+
+        add(new JLabel("Sabor:"));
+        saborField = new JTextField();
+        add(saborField);
+
+        JButton salvarButton = new JButton("Salvar");
+        add(salvarButton);
+
+        salvarButton.addActionListener(e -> {
+            int idade = Integer.parseInt(idadeField.getText());
+            double teor = Double.parseDouble(teorField.getText());
+            String sabor = saborField.getText();
+
+            Bebida bebida = new Bebida(idade, teor, sabor);
+            String mensagem = bebida.beber();
+            TelaPrincipalEx4.registrar("bebida.csv",
+                    idade + ";" + teor + ";" + sabor,
+                    mensagem);
+        });
+
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+}
+
+// =====================
+// Tela Copo
+// =====================
+class CopoGUI extends JFrame {
+    private JTextField materialField, precoField, qtdField;
+
+    public CopoGUI() {
+        setTitle("Cadastro de Copo");
+        setSize(400, 200);
+        setLayout(new GridLayout(4, 2));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        add(new JLabel("Material:"));
+        materialField = new JTextField();
+        add(materialField);
+
+        add(new JLabel("Preço (R$):"));
+        precoField = new JTextField();
+        add(precoField);
+
+        add(new JLabel("Quantidade (ml):"));
+        qtdField = new JTextField();
+        add(qtdField);
+
+        JButton salvarButton = new JButton("Salvar");
+        add(salvarButton);
+
+        salvarButton.addActionListener(e -> {
+            String material = materialField.getText();
+            double preco = Double.parseDouble(precoField.getText());
+            int quantidade = Integer.parseInt(qtdField.getText());
+
+            Copo copo = new Copo(material, preco, quantidade);
+            String mensagem = copo.encher();
+            TelaPrincipalEx4.registrar("copo.csv",
+                    material + ";" + preco + ";" + quantidade,
+                    mensagem);
+        });
+
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+}
+
+// =====================
+// UtilCSV
+// =====================
+class UtilSCV {
+    public static void salvar(String nomeArquivo, String linha) {
+        try (FileWriter writer = new FileWriter(nomeArquivo, true)) {
+            writer.write(linha + "\n");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao salvar: " + e.getMessage());
         }
     }
 }
 
-// =========================
-// CLASSES
-// =========================
+// =====================
+// Classes
+// =====================
 class Animal {
     private String especie;
     private double tamanho;
@@ -92,10 +214,9 @@ class Animal {
         this.alimentacao = alimentacao;
     }
 
-    public void comer() {
-        JOptionPane.showMessageDialog(null,
-                "O " + especie + " tem " + tamanho +
-                        " metros e está se alimentando de " + alimentacao);
+    public String comer() {
+        return "O " + especie + " tem " + tamanho +
+                " metros e se alimenta de " + alimentacao;
     }
 }
 
@@ -110,10 +231,9 @@ class Bebida {
         this.sabor = sabor;
     }
 
-    public void beber() {
-        JOptionPane.showMessageDialog(null,
-                "Bebendo " + sabor + " de " + idade +
-                        " anos com teor alcoólico " + teorAlcoolico + "%");
+    public String beber() {
+        return "Bebendo " + sabor + " de " + idade +
+                " anos com teor alcoólico " + teorAlcoolico + "%";
     }
 }
 
@@ -128,9 +248,8 @@ class Copo {
         this.quantidade = quantidade;
     }
 
-    public void encher() {
-        JOptionPane.showMessageDialog(null,
-                "Encher o copo de " + material +
-                        " de " + quantidade + "ml no bar custa R$" + preco);
+    public String encher() {
+        return "Copo de " + material + " com " + quantidade +
+                "ml custa R$" + preco;
     }
 }
