@@ -1,3 +1,5 @@
+package org.example;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.FileWriter;
@@ -73,7 +75,7 @@ class PessoaGUI extends JFrame {
 
             Pessoa pessoa = new Pessoa(nome, idade, etnia);
             pessoa.carregar();
-            UtilCSV.salvar("pessoa.csv", nome + ";" + idade + ";" + etnia);
+            UtilCSV3.salvar("pessoa.csv", nome + ";" + idade + ";" + etnia);
         });
 
         setLocationRelativeTo(null);
@@ -115,7 +117,7 @@ class LixoGUI extends JFrame {
 
             Lixo lixo = new Lixo(quantidade, tipo, material);
             lixo.coletar();
-            UtilCSV.salvar("lixo.csv", quantidade + ";" + tipo + ";" + material);
+            UtilCSV3.salvar("lixo.csv", quantidade + ";" + tipo + ";" + material);
         });
 
         setLocationRelativeTo(null);
@@ -157,7 +159,7 @@ class TecidoGUI extends JFrame {
 
             Tecido tecido = new Tecido(valor, material, grossura);
             tecido.fabricar();
-            UtilCSV.salvar("tecido.csv", valor + ";" + material + ";" + grossura);
+            UtilCSV3.salvar("tecido.csv", valor + ";" + material + ";" + grossura);
         });
 
         setLocationRelativeTo(null);
@@ -168,7 +170,7 @@ class TecidoGUI extends JFrame {
 // =====================
 // Utilitário para salvar CSV
 // =====================
-class UtilCSV2 {
+class UtilCSV3 {
     public static void salvar(String nomeArquivo, String linha) {
         try (FileWriter writer = new FileWriter(nomeArquivo, true)) {
             writer.write(linha + "\n");
