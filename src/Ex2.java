@@ -1,3 +1,5 @@
+package org.example;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.FileWriter;
@@ -71,7 +73,7 @@ class PovoGUI extends JFrame {
 
             Povo povo = new Povo(nome, origem, quantidade);
             povo.existir();
-            UtilCSV.salvar("povo.csv", nome + ";" + origem + ";" + quantidade);
+            UtilCSV2.salvar("povo.csv", nome + ";" + origem + ";" + quantidade);
         });
 
         setLocationRelativeTo(null);
@@ -113,7 +115,7 @@ class EmpregoGUI extends JFrame {
 
             Emprego emprego = new Emprego(cargo, salario, turno);
             emprego.exercer();
-            UtilCSV.salvar("emprego.csv", cargo + ";" + salario + ";" + turno);
+            UtilCSV2.salvar("emprego.csv", cargo + ";" + salario + ";" + turno);
         });
 
         setLocationRelativeTo(null);
@@ -166,7 +168,7 @@ class DinheiroGUI extends JFrame {
 // =====================
 // Utilitário para salvar CSV
 // =====================
-class UtilCSV {
+class UtilCSV2 {
     public static void salvar(String nomeArquivo, String linha) {
         try (FileWriter writer = new FileWriter(nomeArquivo, true)) {
             writer.write(linha + "\n");
