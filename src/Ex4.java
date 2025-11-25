@@ -1,3 +1,4 @@
+
 package org.example;
 
 import javax.swing.*;
@@ -190,7 +191,7 @@ class CopoGUI extends JFrame {
 // =====================
 // UtilCSV
 // =====================
-class UtilSCV {
+class UtilCSV {
     public static void salvar(String nomeArquivo, String linha) {
         try (FileWriter writer = new FileWriter(nomeArquivo, true)) {
             writer.write(linha + "\n");
